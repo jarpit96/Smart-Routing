@@ -1,0 +1,32 @@
+ AIIMS
+
+ Garthi
+
+ Panchasheel.
+
+ Subzi mandi
+
+ Red Fort
+
+ Town Hall
+
+ Yamuna Vihar Gamri
+
+ Jama Masjid
+
+ LNJP Hospital
+
+ DBG Road
+
+ Govt. Qtr. Dev Nagar
+
+ Sangtrashan
+
+ R.M.L Hospital
+
+ Sucheeta Kriplani Hospital
+
+167 - Successfully Retrieved Geo Coordinates
+
+
+14 - Unsuccessful

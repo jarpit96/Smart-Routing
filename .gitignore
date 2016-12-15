@@ -1,0 +1,3 @@
+.idea/
+RouteRecommenderSystem/*.pyc
+RouteRecommenderSystem/db.sqlite3
