@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home | Choose Smart</title>
+    <style>
+        .controls {
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 300px;
+      }
+
+
+      .controls:focus {
+        border-color: #4d90fe;
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgGMhW7Y5CRDGgYrVGJxt1G8AkWlXQEKI&sensor=false&libraries=places"></script>
+    <script type="text/javascript">
+      //key=AIzaSyBgGMhW7Y5CRDGgYrVGJxt1G8AkWlXQEKI
+      function initialize() {
+            var acInputs = document.getElementsByClassName("places");
+            for (var i = 0; i < acInputs.length; i++) {
+                var input = document.getElementById(acInputs[i].id);
+                var autocomplete = new google.maps.places.Autocomplete(input);
+            }
+        }
+
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+
+</head>
+<body>
+    <form method="post" action="/routing/result/">
+        <table>
+            <tr>
+                <td>Start location</td>
+                <td><input id="src-input" type="text" name="start" class="places controls" placeholder="Enter a location"></td>
+            </tr>
+            <tr>
+                <td>Destination</td>
+                <td><input id="dest-input" type="text" name="destination" class="places controls" placeholder="Enter a location"></td>
+            </tr>
+            <tr>
+                <td>Choose Poi</td>
+                <td>
+                    <tr><td><input type="checkbox" name="amusement_park" value="amusement_park">Amusement Park</td></tr>
+                    <tr><td><input type="checkbox" name="art_gallery" value="art_gallery">Art Gallery</td></tr>
+                    <tr><td><input type="checkbox" name="cafe" value="cafe">Cafe</td></tr>
+                    <tr><td><input type="checkbox" name="casino" value="casino">Casino</td></tr>
+                    <tr><td><input type="checkbox" name="hindu_temple" value="hindu_temple">Hindu Temple</td></tr>
+                    <tr><td><input type="checkbox" name="zoo" value="zoo">Zoo</td></tr>
+                    <tr><td><input type="checkbox" name="spa" value="spa">Spa</td></tr>
+                    <tr><td><input type="checkbox" name="restaurant" value="restaurant">Restaurant</td></tr>
+                    <tr><td><input type="checkbox" name="museum" value="museum">Museum</td></tr>
+                    <tr><td><input type="checkbox" name="lodging" value="lodging">Lodging</td></tr>
+                </td>
+            </tr>
+            <tr>
+                <td>Assign priority from 0-1 : </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Poi</td>
+                <td><input type="text" value="0.3" name="poi_coeff"></td>
+                <td>Crime</td>
+                <td><input type="text" value="0.3" name="crime_coeff"></td>
+                <td>Traffic</td>
+                <td><input type="text" value="0.3" name="traffic_coeff"></td>
+            </tr>
+            <tr><td><input type="submit" value="Go"></td></tr>
+        </table>
+        {% csrf_token %}
+    </form>
+</body>
+</html>

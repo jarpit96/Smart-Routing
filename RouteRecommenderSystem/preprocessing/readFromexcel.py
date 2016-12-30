@@ -9,7 +9,7 @@ district_column_no = 2
 locality_column_no = 4
 state_object = {}
 
-for i in range(2, sheet.max_row):
+for i in range(2, sheet.max_row+1):
     district_name = sheet.cell(row=i, column=district_column_no).value
     localities_in_district = str(sheet.cell(row=i, column=locality_column_no).value).split(',')
     state_object[district_name] = localities_in_district
