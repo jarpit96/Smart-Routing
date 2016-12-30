@@ -8,20 +8,20 @@ gmaps = googlemaps.Client(key='AIzaSyAtc-2ZwV_PGZaT-TxNR1YUnicbdeCNEg0')
 # Request directions via public transit
 now = datetime.now()
 
-print gmaps.geocode('AIIMS')
+# print gmaps.geocode('AIIMS')
 
-# directions_result = gmaps.directions("Rohini, Delhi, India",
-#                                      "CP, Delhi, India",
-#                                      mode="transit",
-#                                      departure_time=now,
-#                                      alternatives = True,
-#                                      region="in")
+directions_result = gmaps.directions("Rohini, New Delhi, Delhi, India",
+                                     "CP, Connaught Lane, Janpath, New Delhi, Delhi, India",
+                                     mode="transit",
+                                     departure_time=now,
+                                     alternatives = True,
+                                     region="in")
+
+#print directions_result
 #
-# # print directions_result
+pp = pprint.PrettyPrinter(indent=4)
 #
-# pp = pprint.PrettyPrinter(indent=4)
-#
-# pp.pprint(directions_result)
+pp.pprint(directions_result)
 
 # for l in directions_result[0]['legs']:
 #     for loc in l['steps']:

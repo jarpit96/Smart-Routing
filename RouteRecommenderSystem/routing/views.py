@@ -3,6 +3,8 @@ import googlemaps, haversine
 from datetime import datetime
 from .models import District, Locality, State
 from django.views.decorators.csrf import csrf_exempt
+import pprint
+import nested_lookup
 # Create your views here.
 
 def test(request):
@@ -73,3 +75,49 @@ def result(request):
             max_polyline = directions_result['overview_polyline']['points']
             #max_path = path
     return render(request, 'result.html', {'polyline': max_polyline})
+
+
+def plotTest(request):
+    gmaps = googlemaps.Client(key='AIzaSyAtc-2ZwV_PGZaT-TxNR1YUnicbdeCNEg0')
+
+    # Request directions via public transit
+    now = datetime.now()
+
+    directions_result = gmaps.directions("Rohini, Delhi, India",
+                                         "CP, Delhi, India",
+                                         mode="transit",
+                                         departure_time=now,
+                                         alternatives=True)
+                                         # region="in")
+    pp = pprint.PrettyPrinter(indent=4)
+    #
+    pp.pprint(directions_result)
+
+    # print directions_result
+    # points = []
+#    for leg in directions_result[0]['legs']:
+#     leg = directions_result[0]['legs'][0]
+#     for ostep in leg['steps']:
+#         ostep = ostep.split("',{u'distance'")
+#
+#         for step in ostep:
+#             if 'steps' in step:
+#                 for istep in step['steps']:
+#                     points += googlemaps.convert.decode_polyline(istep['polyline']['points'])
+#             else:
+#                 points += googlemaps.convert.decode_polyline(ostep['polyline']['points'])
+#     print len(points)
+    # polylines = nested_lookup.nested_lookup('polyline', directions_result[0])
+    # polylines2 = nested_lookup.nested_lookup('points', polylines)
+    # for polyline in polylines2:
+    #      points += googlemaps.convert.decode_polyline(polyline)
+    #     # pass
+    #print len(points)
+    # encoded_polyline = googlemaps.convert.encode_polyline(points)
+    # end = nested_lookup.nested_lookup('end_location', directions_result)
+    # for s in start:
+    #     path.append([s['lat'], s['lng']])
+    # for e in end:
+    #     path.append([e['lat'], e['lng']])
+    # print encoded_polyline
+    return render(request, 'plotTest.html', {'encoded': "fghjk"})
