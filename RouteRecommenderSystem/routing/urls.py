@@ -3,5 +3,5 @@ from routing import views
 
 urlpatterns = [
     url(r'^home/', views.home, name='map'),
-    url(r'^result/', views.plotTest, name='result')
+    url(r'^result/', views.result, name='result')
 ]

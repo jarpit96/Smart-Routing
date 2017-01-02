@@ -1,4 +1,4 @@
-from routing.models import State, District, Locality
+from routing.models import State, District, Locality, PointOfInterests
 import openpyxl, googlemaps, pprint
 
 #Create District and Locality Name and Populate With Names, Foreign Keys, Latitude and Longitude
@@ -81,13 +81,24 @@ def updatePOI():
     global request_cnt, currkey, gmaps
     poi_types = ['amusement_park', 'art_gallery', 'cafe', 'casino', 'hindu_temple', 'zoo', 'spa', 'restaurant',
                  'museum', 'lodging']
+    amusement_park_wt = 0.0
+    art_gallery_wt = 0.0
+    cafe_wt = 0.0
+    casino_wt = 0.0
+    hindu_temple_wt = 0.0
+    zoo_wt = 0.0
+    spa_wt = 0.0
+    restaurant_wt = 0.0
+    museum_wt = 0.0
+    lodging_wt = 0.0
+    poi_wt = []
     states = State.objects.all()
     for state in states:
         districts = District.objects.filter(state = state)
         for district in districts:
             localities = Locality.objects.filter(district = district)
             for locality in localities:
-                avg_rating = 0
+                #avg_rating = 0
                 for poiType in poi_types:
                     rating_cnt = 0
                     results = gmaps.places_nearby(location=[locality.lat, locality.lng], radius=2000, type=poiType)['results']
@@ -109,12 +120,32 @@ def updatePOI():
                         rating_cnt /= (len(results))
                     else:
                         rating_cnt = 3.0
-                    avg_rating += rating_cnt
-                poi_wt = avg_rating / len(poi_types)
+                    #avg_rating += rating_cnt
+                    poi_wt.append(rating_cnt)
+                amusement_park_wt = poi_wt[0]
+                art_gallery_wt = poi_wt[1]
+                cafe_wt = poi_wt[2]
+                casino_wt = poi_wt[3]
+                hindu_temple_wt = poi_wt[4]
+                zoo_wt = poi_wt[5]
+                spa_wt = poi_wt[6]
+                restaurant_wt = poi_wt[7]
+                museum_wt = poi_wt[8]
+                lodging_wt = poi_wt[9]
+                poi_obj = PointOfInterests.objects.create(amusement_park_wt = amusement_park_wt,
+                                                          art_gallery_wt= art_gallery_wt,
+                                                          cafe_wt= cafe_wt,
+                                                          casino_wt= casino_wt,
+                                                          hindu_temple_wt= hindu_temple_wt,
+                                                          zoo_wt = zoo_wt,
+                                                          spa_wt = spa_wt,
+                                                          restaurant_wt = restaurant_wt,
+                                                          museum_wt = museum_wt,
+                                                          lodging_wt = lodging_wt)
                 l = Locality.objects.get(name = locality)
-                l.poi_wt = poi_wt
+                l.poi = poi_obj
                 l.save()
-                print 'average rating for locality: ', locality, 'is: ', avg_rating / len(poi_types)
+               # print 'average rating for locality: ', locality, 'is: ', avg_rating / len(poi_types)
 
 
 updatePOI()
