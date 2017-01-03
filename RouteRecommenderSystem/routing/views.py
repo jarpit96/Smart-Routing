@@ -95,7 +95,7 @@ def result(request):
             max_weight = weight
             max_index = index
             #max_path = path
-    return render(request, 'plotTest.html', {'index': max_index, 'start': start, 'destination' : destination})
+    return render(request, 'plotTest_working.html', {'index': max_index, 'start': start, 'destination' : destination})
 
 
 def plotTest(request):
@@ -141,4 +141,4 @@ def plotTest(request):
     # for e in end:
     #     path.append([e['lat'], e['lng']])
     # print encoded_polyline
-    return render(request, 'plotTest.html', {'index': 1})
+    return render(request, 'plotTest_working.html', {'index': 1})

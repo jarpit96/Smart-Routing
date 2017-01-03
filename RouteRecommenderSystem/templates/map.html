@@ -1,113 +1,174 @@
-<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Home | Choose Smart</title>
-    <style>
-        .controls {
-        margin-top: 10px;
-        border: 1px solid transparent;
-        border-radius: 2px 0 0 2px;
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        height: 32px;
-        outline: none;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        background-color: #fff;
-        font-family: Roboto;
-        font-size: 15px;
-        font-weight: 300;
-        margin-left: 12px;
-        padding: 0 11px 0 13px;
-        text-overflow: ellipsis;
-        width: 300px;
-      }
 
-
-      .controls:focus {
-        border-color: #4d90fe;
-      }
-        #container{
-            width:720px;
-            margin:auto;
-        }
-    </style>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgGMhW7Y5CRDGgYrVGJxt1G8AkWlXQEKI&sensor=false&libraries=places"></script>
-    <script type="text/javascript">
-      //key=AIzaSyBgGMhW7Y5CRDGgYrVGJxt1G8AkWlXQEKI
-      function initialize() {
-            var acInputs = document.getElementsByClassName("places");
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width = device-width, initial-scale = 1">
+		<title>Home | Choose Smart</title>
+		
+		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgGMhW7Y5CRDGgYrVGJxt1G8AkWlXQEKI&sensor=false&libraries=places"></script>
+		<!--*****************************************************************************************************************************-->
+		<script type="text/javascript">
+		  //key=AIzaSyBgGMhW7Y5CRDGgYrVGJxt1G8AkWlXQEKI
+		  function initialize() {
+				var acInputs = document.getElementsByClassName("places");
             for (var i = 0; i < acInputs.length; i++) {
                 var input = document.getElementById(acInputs[i].id);
                 var autocomplete = new google.maps.places.Autocomplete(input);
             }
-        }
+          }
+          google.maps.event.addDomListener(window, 'load', initialize);
+		</script>
+		<script>
 
-        google.maps.event.addDomListener(window, 'load', initialize);
-    </script>
-    <script>
+			function getCheckboxesData(){
+				var poiElement = document.getElementById('poiData');
+				var poiData = [];
+				var poiAll = [];
+				var ticked=0;
 
-        function getCheckboxesData(){
-            var poiElement = document.getElementById('poiData');
-            var poiData = [];
-            var checkBoxes = document.getElementsByClassName('poi');
-            for(var i=0; i<checkBoxes.length;i++){
-                if(checkBoxes[i].checked){
-                    poiData.push(i);
-                }
-            }
-            poiElement.value = poiData;
-            alert(poiData);
-        }
+				var checkBoxes = document.getElementsByClassName('poi');
+				for(var i=0; i<checkBoxes.length;i++){
+					poiAll.push(i);
+					if(checkBoxes[i].checked){
+						ticked=1;
+						poiData.push(i);
+					}
+				}
+				poiElement.value = poiData;
+				if(ticked==0){
+					poiElement.value = poiAll;
+				}
+				//window.alert("hello");
+			}
 
-    </script>
+		</script>
+				<!--*****************************************************************************************************************************-->
 
-</head>
-<body>
-<h1>ROUTE RECOMMENDER SYSTEM</h1>
-<div id="container">
-    <form method="post" action="/routing/result/" onsubmit="getCheckboxesData()">
-        <table>
-            <tr>
-                <td>Start location</td>
-                <td><input id="src-input" type="text" name="start" class="places controls" placeholder="Enter a location"></td>
-            </tr>
-            <tr>
-                <td>Destination</td>
-                <td><input id="dest-input" type="text" name="destination" class="places controls" placeholder="Enter a location"></td>
-            </tr>
-            <tr>
-                <td>Choose Poi</td>
-                <td>
-                    <tr><td><input class = "poi" type="checkbox" name="amusement_park" value="amusement_park">Amusement Park</td></tr>
-                    <tr><td><input class = "poi" type="checkbox" name="art_gallery" value="art_gallery">Art Gallery</td></tr>
-                    <tr><td><input class = "poi" type="checkbox" name="cafe" value="cafe">Cafe</td></tr>
-                    <tr><td><input class = "poi" type="checkbox" name="casino" value="casino">Casino</td></tr>
-                    <tr><td><input class = "poi" type="checkbox" name="hindu_temple" value="hindu_temple">Hindu Temple</td></tr>
-                    <tr><td><input class = "poi" type="checkbox" name="zoo" value="zoo">Zoo</td></tr>
-                    <tr><td><input class = "poi" type="checkbox" name="spa" value="spa">Spa</td></tr>
-                    <tr><td><input class = "poi" type="checkbox" name="restaurant" value="restaurant">Restaurant</td></tr>
-                    <tr><td><input class = "poi" type="checkbox" name="museum" value="museum">Museum</td></tr>
-                    <tr><td><input class = "poi" type="checkbox" name="lodging" value="lodging">Lodging</td></tr>
-                </td>
-            </tr>
-            <tr>
-                <td>Assign priority from 0-1 : </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td>Poi</td>
-                <td><input type="text" value="0.3" name="poi_coeff"></td>
-                <td>Crime</td>
-                <td><input type="text" value="0.3" name="crime_coeff"></td>
-                <td>Traffic</td>
-                <td><input type="text" value="0.3" name="traffic_coeff"></td>
-            </tr>
-            <input type="hidden" name="poiData" id="poiData">
-            <tr><td><input type="submit" value="Go"></td></tr>
-        </table>
-        {% csrf_token %}
-    </form>
-</div>
-</body>
+		
+		<style>
+			.jumbotron{
+				padding-top: 30px;
+				padding-bottom: 30px;
+				margin-bottom: 30px;
+				background-color:#2E2D88;
+				color:white;
+			}
+			
+			.heading_top{
+				padding-top: 10px;
+				text-align: center;
+				padding-bottom: 10px;
+				background-color:#6E2D88;
+				color:white;
+			}
+			
+			.tab-content {
+				border-left: 1px solid #ddd;
+				border-right: 1px solid #ddd;
+				border-bottom: 1px solid #ddd;
+				padding: 10px;
+			}
+			.nav-tabs {
+				margin-bottom: 0;
+			}
+			
+			.controls {
+				margin-top: 10px;
+				border: 1px solid transparent;
+				border-radius: 2px 0 0 2px;
+				box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				height: 32px;
+				outline: none;
+				box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+				background-color: #fff;
+				font-family: Roboto;
+				font-size: 15px;
+				font-weight: 300;
+				margin-left: 12px;
+				padding: 0 11px 0 13px;
+				text-overflow: ellipsis;
+				width: 300px;
+			}
+			
+			.controls:focus {
+				border-color: #4d90fe;
+			}
+		</style>
+
+	</head>
+	
+	<body>
+	
+	<div class="heading_top">
+		<h3>Smart Routing</h3>
+	</div>
+	<form class="form-horizontal" style="margin-top: 10%" method="post" action="/routing/result/" onsubmit="getCheckboxesData()">
+		<div class="form-group">
+			<label class="control-label col-sm-3" for="Source">Enter Source</label>
+			<div class="col-sm-6">
+				<input id="src-input" type="text" name="start" class="places controls" placeholder="Enter a location" style="width:100%;margin:0px">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-3" for="Destination">Enter Destination</label>
+			<div class="col-sm-6"> 
+				<input id="dest-input" type="text" name="destination" class="places controls" placeholder="Enter a location" style="width:100%;margin:0px">
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="control-label col-sm-3" for="pwd">Assign priority</label>
+			<div class="col-sm-2"> 
+				<input type="text" class="form-control" id="priorityPOI" placeholder="Points of Intrests" name="poi_coeff">
+			</div>
+			<div class="col-sm-2"> 
+				<input type="text" class="form-control" id="priorityCrime" placeholder="Crime" name="crime_coeff">
+			</div>
+			<div class="col-sm-2"> 
+				<input type="text" class="form-control" id="priorityTraffic" placeholder="Traffic" name="traffic_coeff">
+			</div>
+		</div>
+		
+		<div class="form-group"> 
+			<div class="col-sm-offset-3 col-sm-2">
+				<div class="dropdown">
+					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="background-color: #ffffff;border-color: #6E2D88; color:#000000;">Points of Intrests
+					<span class="caret"></span></button>
+					<ul class="dropdown-menu" >
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Amusement Park</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Art Gallery</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Cafe</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Casino</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Hindu Temple</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Zoo</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Spa</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Restaurent</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Museum</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Lodging</li>
+
+		 			</ul>
+				</div>
+			</div>
+			
+			
+		</div>
+		<div class="form-group">
+			<div class="col-sm-offset-3 col-sm-2" >
+                <input type="hidden" name="poiData" id="poiData">
+				<button type="submit" class="btn btn-primary" style="background-color: #6E2D88;border-color: #ffffff;margin-right:0px" >Get Path</button>
+			</div>
+		</div>
+		
+		
+</form>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgGMhW7Y5CRDGgYrVGJxt1G8AkWlXQEKI&sensor=false&libraries=places"></script>
+	
+	</body>
+	
 </html>
