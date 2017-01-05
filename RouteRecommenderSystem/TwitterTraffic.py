@@ -28,11 +28,17 @@ def getTweets():
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_secret)
     api = tweepy.API(auth)
+    # calculating date previous.. ie. 15days before current date
+    datePrevious = datetime.datetime.today() - datetime.timedelta(days=15)
 
     # opening file to write tweets
     TweetFile = open('Tweet_delhi_trafic.txt', 'a')
 
     for tweet in tweepy.Cursor(api.user_timeline, id='@dtptraffic', lang='en').items(1000000):
+
+        # added a filter for the number of days = 15
+        if (tweet.created_at < datePrevious):
+            break
 
         # getting tweets with label of **Traffic Alert**
         matchTrafficAlert = re.match(r'Traffic Alert', tweet.text, re.M | re.I)
