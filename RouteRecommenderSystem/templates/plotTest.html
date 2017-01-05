@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width = device-width, initial-scale = 1">
+    <style type="text/css">
+		.heading_top{
+			height: 12%;
+			padding-top: 10px;
+			text-align: center;
+			padding-bottom: 10px;
+			background-color:#6E2D88;
+			color:white;
+			margin-bottom:10px;
+		}
+        body
+        {
+            font-family: Arial;
+            font-size: 10pt;
+        }
+    </style>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAtc-2ZwV_PGZaT-TxNR1YUnicbdeCNEg0&sensor=false&libraries=places"></script>
+    <script type="text/javascript">
+        var source, destination;
+        var directionsDisplay;
+        var directionsService = new google.maps.DirectionsService();
+        google.maps.event.addDomListener(window, 'load', function () {
+            new google.maps.places.SearchBox(document.getElementById('txtSource'));
+            new google.maps.places.SearchBox(document.getElementById('txtDestination'));
+            directionsDisplay = new google.maps.DirectionsRenderer({ 'draggable': true });
+        });
+
+        function GetRoute() {
+            var delhi = new google.maps.LatLng(28.6519,77.2314);
+            var mapOptions = {
+                zoom: 7,
+                center: delhi
+            };
+            map = new google.maps.Map(document.getElementById('dvMap'), mapOptions);
+            directionsDisplay.setMap(map);
+            directionsDisplay.setPanel(document.getElementById('dvPanel'));
+
+            //*********DIRECTIONS AND ROUTE**********************//
+            source = document.getElementById("txtSource").value;
+            destination = document.getElementById("txtDestination").value;
+
+            var request = {
+                origin: source,
+                destination: destination,
+                travelMode: google.maps.TravelMode.TRANSIT,
+                provideRouteAlternatives: true
+            };
+            directionsService.route(request, function (response, status) {
+                //document.getElementById('response').innerHTML = response.toSource();
+                //console.log(response);
+                //response = "{ // { response }}";
+                if (status == google.maps.DirectionsStatus.OK) {
+                    directionsDisplay.setDirections(response);
+                    directionsDisplay.setRouteIndex({{ index }});
+                }
+            });
+
+            //*********DISTANCE AND DURATION**********************//
+            var service = new google.maps.DistanceMatrixService();
+            service.getDistanceMatrix({
+                origins: [source],
+                destinations: [destination],
+                travelMode: google.maps.TravelMode.DRIVING,
+                unitSystem: google.maps.UnitSystem.METRIC,
+                avoidHighways: false,
+                avoidTolls: false
+            }, function (response, status) {
+                if (status == google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS") {
+                    var distance = response.rows[0].elements[0].distance.text;
+                    var duration = response.rows[0].elements[0].duration.text;
+					/*
+                    var dvDistance = document.getElementById("dvDistance");
+                    dvDistance.innerHTML = "";
+                    dvDistance.innerHTML += "Distance: " + distance + "<br />";
+                    dvDistance.innerHTML += "Duration:" + duration;
+					*/
+					//old code is commented above in /**/
+					//new code below starts
+					var dvDistance1 = document.getElementById("dvDistance1");
+					var dvDistance2 = document.getElementById("dvDistance2");
+					var dvDistance3 = document.getElementById("dvDistance3");
+					var dvDistance4 = document.getElementById("dvDistance4");
+					dvDistance1.innerHTML = "Distance : ";
+					dvDistance2.innerHTML = distance ;
+					dvDistance3.innerHTML = "Duration : ";
+					dvDistance4.innerHTML = duration ;
+					//new code ends here
+
+                } else {
+                    alert("Unable to find the distance via road.");
+                }
+            });
+        }
+    </script>
+
+
+</head>
+<body onload="GetRoute()">
+
+	
+	<div class="heading_top">
+		<h3>Smart Routing</h3>
+	</div>
+	
+	<!-- this div correesponds to table tr row 1-->
+	<div class="form-group" style="margin-bottom:4%;margin-left:6%">
+		<div class="col-sm-1" style="font-size: 15px;font-weight:450;color :#6E2D88"> 
+			Source
+		</div>
+		<div class="col-sm-4"> 
+			<input type="text" class="form-control" id="txtSource" value="{{ start }}" placeholder="Source" name="sourcePlace" disabled>
+		</div>
+		<div class="col-sm-1" style="font-size: 15px;font-weight:450;color :#6E2D88"> 
+			Destination
+		</div>
+		<div class="col-sm-4"> 
+			<input type="text" class="form-control" id="txtDestination" value="{{ destination }}" placeholder="Destination" name="destinationPlace" disabled>
+		</div>
+		<!--<div class="col-sm-2" >
+			<input type="button" class="btn btn-primary" value="Get Route" onclick="GetRoute()" style="background-color: #6E2D88;border-color: #ffffff;margin-right:0px" />
+		</div>-->
+	
+	</div>
+	
+	<!-- this div correesponds to table tr row 2-->
+	<!-- script regarding this has been modified a bit..  lines 83-99-->
+	<div class="form-group" style="margin-bottom:4%;margin-left:6%">
+		<div class="col-sm-1" id="dvDistance1" style="font-size: 15px;font-weight:450;color :#6E2D88" > 
+		</div>
+		<div class="col-sm-2" id="dvDistance2" style="font-size: 15px;font-weight:450;color :#6E2D88" > 
+		</div>
+		<div class="col-sm-offset-2 col-sm-1 " id="dvDistance3" style="font-size: 15px;font-weight:450;color :#6E2D88" > 
+		</div>
+		<div class="col-sm-2" id="dvDistance4" style="font-size: 15px;font-weight:450;color :#6E2D88" > 
+		</div>		
+	</div>
+	
+	<!--this div correesponds to table tr row 3-->
+	<div style="margin-top:7%;height:480px">
+		<div class="col-sm-7" id="dvMap" style="font-size: 15px;font-weight:450;color :#6E2D88;height:100%;"> 
+		</div>
+		<div class="col-sm-5" id="dvPanel" style="font-size: 15px;font-weight:450;color :#6E2D88;height:100%"> 
+		</div>
+	</div>
+	
+	<!-- this div conatins paragraph element with id "response"-->
+	<div class="col-sm-12" style="font-size: 15px;font-weight:450;color :#6E2D88;"> 
+			<p id="response"> </p>
+	</div>
+	<!-- ***************************************************************************************************** new html code ends-->
+	
+	<!--   old html code begins *********************************************************************** -->
+	<!-- 
+    <table border="0" cellpadding="0" cellspacing="3">
+        <tr>
+            <td colspan="2">
+                Source:
+                <input type="text" id="txtSource" value="{{ start }}" style="width: 200px" />
+                &nbsp; Destination:
+                <input type="text" id="txtDestination" value="{{ destination }}" style="width: 200px" />
+                <br />
+                <input type="button" value="Get Route" onclick="GetRoute()" />
+                <hr />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div id="dvDistance">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="dvMap" style="width: 500px; height: 500px;">
+                </div>
+            </td>
+            <td>
+                <div id="dvPanel" style="width: 500px; height: 500px;">
+                </div>
+            </td>
+        </tr>
+    </table>
+    <br />
+    <p id="response" > </p>
+	-->
+	<!--old html code ends **************************************************************************** -->
+</body>.
+</html>

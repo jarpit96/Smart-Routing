@@ -31,6 +31,9 @@ def findNearestLocality(lat, lng):
 def home(request):
     return render(request, 'map.html', )
 
+def start(request):
+    return render(request, 'startPage.html',)
+
 @csrf_exempt
 def result(request):
     start = request.POST.get('start')
@@ -95,7 +98,7 @@ def result(request):
             max_weight = weight
             max_index = index
             #max_path = path
-    return render(request, 'plotTest_working.html', {'index': max_index, 'start': start, 'destination' : destination})
+    return render(request, 'plotTest.html', {'index': max_index, 'start': start, 'destination' : destination})
 
 
 def plotTest(request):

@@ -40,7 +40,17 @@
 				if(ticked==0){
 					poiElement.value = poiAll;
 				}
-				//window.alert("hello");
+
+                var poiValue = parseFloat(document.getElementById("priorityPOI").value);
+                var crimeValue = parseFloat(document.getElementById("priorityCrime").value);
+                var trafficValue = parseFloat(document.getElementById("priorityTraffic").value);
+                if((poiValue+crimeValue+trafficValue)==1.0)return true;
+                else{
+                    var errorMsg = document.getElementById("errorMsg");
+                    errorMsg.innerHTML = "Sum of all 3 priorities must be 1";
+                    return false;
+                }
+
 			}
 
 		</script>
@@ -105,8 +115,14 @@
 	<div class="heading_top">
 		<h3>Smart Routing</h3>
 	</div>
-	<form class="form-horizontal" style="margin-top: 10%" method="post" action="/routing/result/" onsubmit="getCheckboxesData()">
-		<div class="form-group">
+	<form class="form-horizontal" style="margin-top: 10%" method="post" action="/routing/result/" onsubmit="return getCheckboxesData()">
+        <div class="form-group">
+			<label class="control-label col-sm-3" ></label>
+			<div class="col-sm-6">
+                <span style="color: red;font-size: larger" id="errorMsg"></span>
+			</div>
+		</div>
+        <div class="form-group">
 			<label class="control-label col-sm-3" for="Source">Enter Source</label>
 			<div class="col-sm-6">
 				<input id="src-input" type="text" name="start" class="places controls" placeholder="Enter a location" style="width:100%;margin:0px">
@@ -122,13 +138,13 @@
 		<div class="form-group">
 			<label class="control-label col-sm-3" for="pwd">Assign priority</label>
 			<div class="col-sm-2"> 
-				<input type="text" class="form-control" id="priorityPOI" placeholder="Points of Intrests" name="poi_coeff">
+				<input type="text" class="form-control" id="priorityPOI" placeholder="Points of Intrests" name="poi_coeff" value="0.3">
 			</div>
 			<div class="col-sm-2"> 
-				<input type="text" class="form-control" id="priorityCrime" placeholder="Crime" name="crime_coeff">
+				<input type="text" class="form-control" id="priorityCrime" placeholder="Crime" name="crime_coeff" value="0.3">
 			</div>
 			<div class="col-sm-2"> 
-				<input type="text" class="form-control" id="priorityTraffic" placeholder="Traffic" name="traffic_coeff">
+				<input type="text" class="form-control" id="priorityTraffic" placeholder="Traffic" name="traffic_coeff" value="0.4">
 			</div>
 		</div>
 		
