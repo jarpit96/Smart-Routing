@@ -144,4 +144,4 @@ def plotTest(request):
     # for e in end:
     #     path.append([e['lat'], e['lng']])
     # print encoded_polyline
-    return render(request, 'plotTest_working.html', {'index': 1})
+    return render(request, 'plotTest.html', {'index': 1})
