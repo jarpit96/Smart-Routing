@@ -29,7 +29,7 @@ def findNearestLocality(lat, lng):
     return min_locality
 
 def home(request):
-    return render(request, 'map.html', )
+    return render(request, 'map_modified.html', )
 
 def start(request):
     return render(request, 'startPage.html',)

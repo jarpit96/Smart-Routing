@@ -1,0 +1,234 @@
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width = device-width, initial-scale = 1">
+		<title>Home | Choose Smart</title>
+		
+		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgGMhW7Y5CRDGgYrVGJxt1G8AkWlXQEKI&sensor=false&libraries=places"></script>
+		<!--*****************************************************************************************************************************-->
+		<script type="text/javascript">
+		  //key=AIzaSyBgGMhW7Y5CRDGgYrVGJxt1G8AkWlXQEKI
+		  function initialize() {
+				var acInputs = document.getElementsByClassName("places");
+            for (var i = 0; i < acInputs.length; i++) {
+                var input = document.getElementById(acInputs[i].id);
+                var autocomplete = new google.maps.places.Autocomplete(input);
+            }
+          }
+          google.maps.event.addDomListener(window, 'load', initialize);
+		</script>
+		<script>
+
+			function getPoiPriorityData(){
+				var poiElement = document.getElementById('poiData');
+
+                var lis = document.getElementById('listb').getElementsByTagName('li');
+                var p = '';
+                for (var i=0 ;i<lis.length;i++) {
+                    p += lis[i].innerHTML + ',';
+                }
+                p = p.slice(0, -1);
+                document.getElementById("poiPriority").value = p.toString();
+
+
+                var poiValue = parseFloat(document.getElementById("priorityPOI").value);
+                var crimeValue = parseFloat(document.getElementById("priorityCrime").value);
+                var trafficValue = parseFloat(document.getElementById("priorityTraffic").value);
+                if((poiValue+crimeValue+trafficValue)==1.0)return true;
+                else{
+                    var errorMsg = document.getElementById("errorMsg");
+                    errorMsg.innerHTML = "Sum of all 3 priorities must be 1";
+                    return false;
+                }
+
+			}
+
+		</script>
+				<!--*****************************************************************************************************************************-->
+
+		
+		<style>
+			.jumbotron{
+				padding-top: 30px;
+				padding-bottom: 30px;
+				margin-bottom: 30px;
+				background-color:#2E2D88;
+				color:white;
+			}
+			
+			.heading_top{
+				padding-top: 10px;
+				text-align: center;
+				padding-bottom: 10px;
+				background-color:#6E2D88;
+				color:white;
+			}
+			
+			.tab-content {
+				border-left: 1px solid #ddd;
+				border-right: 1px solid #ddd;
+				border-bottom: 1px solid #ddd;
+				padding: 10px;
+			}
+			.nav-tabs {
+				margin-bottom: 0;
+			}
+			
+			.controls {
+				margin-top: 10px;
+				border: 1px solid transparent;
+				border-radius: 2px 0 0 2px;
+				box-sizing: border-box;
+				-moz-box-sizing: border-box;
+				height: 32px;
+				outline: none;
+				box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+				background-color: #fff;
+				font-family: Roboto;
+				font-size: 15px;
+				font-weight: 300;
+				margin-left: 12px;
+				padding: 0 11px 0 13px;
+				text-overflow: ellipsis;
+				width: 300px;
+			}
+			
+			.controls:focus {
+				border-color: #4d90fe;
+			}
+		</style>
+
+	</head>
+	
+	<body>
+	
+	<div class="heading_top">
+		<h3>Smart Routing</h3>
+	</div>
+	<form class="form-horizontal" style="margin-top: 10%" method="post" action="/routing/result/" onsubmit="return getPoiPriorityData()">
+        <div class="form-group">
+			<label class="control-label col-sm-3" ></label>
+			<div class="col-sm-6">
+                <span style="color: red;font-size: larger" id="errorMsg"></span>
+			</div>
+		</div>
+        <div class="form-group">
+			<label class="control-label col-sm-3" for="Source">Enter Source</label>
+			<div class="col-sm-6">
+				<input id="src-input" type="text" name="start" class="places controls" placeholder="Enter a location" style="width:100%;margin:0px">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-sm-3" for="Destination">Enter Destination</label>
+			<div class="col-sm-6"> 
+				<input id="dest-input" type="text" name="destination" class="places controls" placeholder="Enter a location" style="width:100%;margin:0px">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="control-label col-sm-3" for="pwd">Assign priority : </label>
+            <label class="control-label col-sm-1" for="Source">Poi</label>
+			<div class="col-sm-1">
+				<input type="text" class="form-control" id="priorityPOI" placeholder="Points of Intrests" name="poi_coeff" value="0.3">
+			</div>
+            <label class="control-label col-sm-1" for="Source">Crime</label>
+			<div class="col-sm-1">
+				<input type="text" class="form-control" id="priorityCrime" placeholder="Crime" name="crime_coeff" value="0.3">
+			</div>
+            <label class="control-label col-sm-1" for="Source">Traffic</label>
+			<div class="col-sm-1">
+				<input type="text" class="form-control" id="priorityTraffic" placeholder="Traffic" name="traffic_coeff" value="0.4">
+			</div>
+		</div>
+		
+		{% comment %}<div class="form-group">
+			<div class="col-sm-offset-3 col-sm-2">
+				<div class="dropdown">
+					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="background-color: #ffffff;border-color: #6E2D88; color:#000000;">Points of Intrests
+					<span class="caret"></span></button>
+					<ul class="dropdown-menu" >
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Amusement Park</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Art Gallery</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Cafe</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Casino</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Hindu Temple</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Zoo</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Spa</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Restaurent</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Museum</li>
+						<li >&nbsp&nbsp<input class = "poi" type="checkbox" name="amusement_park" value="amusement_park"> Lodging</li>
+
+		 			</ul>
+				</div>
+			</div>
+			
+			
+		</div>{% endcomment %}
+        <div class="control-group">
+            <label class="control-label">POI's Priority:</label> <!-- TODO -->
+                <div class="controls">
+                        <div class="container">
+                            <br />
+                            <div class="row">
+
+                                <div class="dual-list list-left col-md-5">
+                                    <div class="well text-right">
+                                        <div class="row">
+                                        </div>
+                                        <label class="control-label">Set POI's priority: </label>
+                                        <ul class="list-group">
+                                            {% for poi in poiList %}
+                                                <li class="list-group-item">{{ poi }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="list-arrows col-md-1 text-center">
+                                    <button type="button" class="btn btn-default btn-sm move-left">
+                                        <span class="glyphicon glyphicon-chevron-left"></span>
+                                    </button>
+
+                                    <button type="button" class="btn btn-default btn-sm move-right">
+                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                    </button>
+                                </div>
+
+                                <div class="dual-list list-right col-md-5">
+                                    <div class="well">
+                                        <div class="row">
+
+                                        </div>
+                                        <label class="control-label">Selected Poi's: </label>
+                                        <ul id="listb" class="list-group">
+                                            {% comment %}<li class="list-group-item">A</li>
+                                            <li class="list-group-item">A</li>{% endcomment %}
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                </div>
+        </div>
+		<div class="form-group">
+			<div class="col-sm-offset-3 col-sm-2" >
+                <input type="hidden" name="poiData" id="poiData">
+                <input type="hidden" value="" name="poiPriority" id="poiPriority">
+				<button type="submit" class="btn btn-primary" style="background-color: #6E2D88;border-color: #ffffff;margin-right:0px" >Get Path</button>
+			</div>
+		</div>
+		
+		
+</form>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgGMhW7Y5CRDGgYrVGJxt1G8AkWlXQEKI&sensor=false&libraries=places"></script>
+	
+	</body>
+	
+</html>

@@ -49,10 +49,20 @@
             //*********DIRECTIONS AND ROUTE**********************//
             source = document.getElementById("txtSource").value;
             destination = document.getElementById("txtDestination").value;
+            /*var waypts = [];
+            var poiWayPoints = {{wayPoints}};
+            alert(poiWayPoints);
+            for(var i = 0; i < poiWayPoints.length; i++){
+                waypts.push({
+                              location: poiWayPoints[i],
+                              stopover: true
+                            });
+                }*/
 
             var request = {
                 origin: source,
                 destination: destination,
+                //waypoints: waypts,
                 travelMode: google.maps.TravelMode.TRANSIT,
                 provideRouteAlternatives: true
             };
@@ -71,7 +81,7 @@
             service.getDistanceMatrix({
                 origins: [source],
                 destinations: [destination],
-                travelMode: google.maps.TravelMode.DRIVING,
+                travelMode: google.maps.TravelMode.TRANSIT,
                 unitSystem: google.maps.UnitSystem.METRIC,
                 avoidHighways: false,
                 avoidTolls: false
