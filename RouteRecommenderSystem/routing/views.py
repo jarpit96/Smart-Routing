@@ -31,8 +31,8 @@ def findNearestLocality(lat, lng):
 
 def home(request):
 
-    poi_types = ['amusement_park', 'art_gallery', 'cafe', 'casino', 'hindu_temple', 'zoo', 'spa', 'restaurant',
-                 'museum', 'lodging']
+    poi_types = {'Amusement Park': 0, 'Art Gallery': 1, 'Cafe': 2, 'Casino': 3, 'Hindu Temple':4, 'Zoo':5, 'Spa':6, 'Restaurant':7,
+                 'Museum':8, 'Lodging':9}
     return render(request, 'map_modified.html',{'poiList': poi_types} )
 
 
@@ -43,17 +43,18 @@ def start(request):
 def result(request):
     poi_types = ['amusement_park', 'art_gallery', 'cafe', 'casino', 'hindu_temple', 'zoo', 'spa', 'restaurant',
                  'museum', 'lodging']
+
     start = request.POST.get('start')
     destination = request.POST.get('destination')
     poi_coeff = request.POST.get('poi_coeff')
     crime_coeff = request.POST.get('crime_coeff')
     traffic_coeff = request.POST.get('traffic_coeff')
-    poi_list = request.POST.get('poiData')
+    poi_list = request.POST.get('poiPriority')
     poi_list = poi_list.split(',')
     print poi_list, "--->>poi's selected"
     gmaps = googlemaps.Client(key='AIzaSyDmT6F29WJ9M-viNlrMzRpRPtdseHTCfoA')
     now = datetime.now()
-    response = gmaps.directions(start,destination,mode="transit",departure_time=now,alternatives = True)
+    response = gmaps.directions(start,destination,mode="driving",departure_time=now,alternatives = True)
 
     max_weight = -float('inf')
     max_polyline = ''
@@ -81,10 +82,13 @@ def result(request):
                 else:
                     path.append([loc['start_location']['lat'], loc['start_location']['lng']])
                     path.append([loc['end_location']['lat'], loc['end_location']['lng']])
-        pois = Set([])
+        pois = []
+        locs = Set([])
         for p in path:
             l = findNearestLocality(p[0], p[1])
             print l.name
+            locs.add(l)
+        for l in locs:
             print "Reached 1"
             for poi_index in poi_list:
                 print "Reached 2"
@@ -93,7 +97,7 @@ def result(request):
                 if len(results) != 0:
                     print "Reached 3"
                     max_rating = 0
-                    max_poi = ''
+                    max_poi = {}
                     for pid in results:
                         print "Reached 4"
                         if 'rating' in pid:
@@ -101,8 +105,8 @@ def result(request):
                             if int(pid['rating']) > max_rating:
                                 print "Reached 6"
                                 max_rating = pid['rating']
-                                max_poi = pid['name']
-                            pois.add(max_poi)
+                                max_poi = pid['geometry']['location']
+                            pois.append(max_poi)
                             print "Updated POIS", pois
                             break
             poi_weight = 0.0
@@ -129,7 +133,7 @@ def result(request):
             max_pois = pois
             #max_path = path
     print "Max_POI", max_pois
-    return render(request, 'plotTest.html', {'index': max_index, 'start': start, 'destination' : destination, 'wayPoints': max_pois})
+    return render(request, 'plotTest.html', {'index': max_index, 'start': start, 'destination' : destination, 'wayPoints': list(max_pois)})
 
 
 def plotTest(request):
@@ -140,7 +144,7 @@ def plotTest(request):
 
     directions_result = gmaps.directions("Rohini, Delhi, India",
                                          "CP, Delhi, India",
-                                         mode="transit",
+                                         mode="driving",
                                          departure_time=now,
                                          alternatives=True)
                                          # region="in")

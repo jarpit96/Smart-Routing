@@ -6,10 +6,12 @@
 		<title>Home | Choose Smart</title>
 		
 		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-		
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgGMhW7Y5CRDGgYrVGJxt1G8AkWlXQEKI&sensor=false&libraries=places"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
+        <script src="../../static/js/applicationForm.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBgGMhW7Y5CRDGgYrVGJxt1G8AkWlXQEKI&sensor=false&libraries=places"></script>
 		<!--*****************************************************************************************************************************-->
-		<script type="text/javascript">
+
+        <script type="text/javascript">
 		  //key=AIzaSyBgGMhW7Y5CRDGgYrVGJxt1G8AkWlXQEKI
 		  function initialize() {
 				var acInputs = document.getElementsByClassName("places");
@@ -28,7 +30,7 @@
                 var lis = document.getElementById('listb').getElementsByTagName('li');
                 var p = '';
                 for (var i=0 ;i<lis.length;i++) {
-                    p += lis[i].innerHTML + ',';
+                    p += lis[i].value + ',';
                 }
                 p = p.slice(0, -1);
                 document.getElementById("poiPriority").value = p.toString();
@@ -167,7 +169,7 @@
 			
 			
 		</div>{% endcomment %}
-        <div class="control-group">
+        <div class="form-group">
             <label class="control-label">POI's Priority:</label> <!-- TODO -->
                 <div class="controls">
                         <div class="container">
@@ -180,8 +182,8 @@
                                         </div>
                                         <label class="control-label">Set POI's priority: </label>
                                         <ul class="list-group">
-                                            {% for poi in poiList %}
-                                                <li class="list-group-item">{{ poi }}</li>
+                                            {% for poi, index in poiList.items %}
+                                                <li class="list-group-item" value = {{ index }}>{{ poi }}</li>
                                             {% endfor %}
                                         </ul>
                                     </div>
