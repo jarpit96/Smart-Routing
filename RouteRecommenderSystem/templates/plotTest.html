@@ -50,20 +50,13 @@
             source = document.getElementById("txtSource").value;
             destination = document.getElementById("txtDestination").value;
             var waypts = [];
-            var poiWayPoints = [];
-            //alert("{{ wayPoints }}");
             {% for w in wayPoints %}
-                {{ w.lat }} {{ w.lng }}
-            poiWayPoints.push('{{ w }}');
-            {% endfor %}
-            //alert(poiWayPoints);
-            for(var i = 0; i < Math.min(poiWayPoints.length,8); i++){
-                //alert((poiWayPoints[i]['lat']).toString() + (poiWayPoints[i]['lng']).toString());
                 waypts.push({
-                              location:new google.maps.LatLng(poiWayPoints[i]['lat'] , poiWayPoints[i]['lng']),
+                              location:new google.maps.LatLng({{ w.lat }}, {{ w.lng }}),
                               stopover: true
                             });
-                }
+            {% endfor %}
+
             alert(waypts);
             var request = {
                 origin: source,
@@ -87,7 +80,8 @@
             service.getDistanceMatrix({
                 origins: [source],
                 destinations: [destination],
-                //waypoints: waypts,
+                waypoints: waypts,
+                optimizeWaypoints: true,
                 travelMode: google.maps.TravelMode.DRIVING,
                 unitSystem: google.maps.UnitSystem.METRIC,
                 avoidHighways: false,
