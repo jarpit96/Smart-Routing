@@ -5,6 +5,7 @@ from datetime import datetime
 from .models import District, Locality, State
 from django.views.decorators.csrf import csrf_exempt
 import pprint
+from sets import Set
 # Create your views here.
 
 def test(request):
@@ -29,13 +30,19 @@ def findNearestLocality(lat, lng):
     return min_locality
 
 def home(request):
-    return render(request, 'map_modified.html', )
+
+    poi_types = ['amusement_park', 'art_gallery', 'cafe', 'casino', 'hindu_temple', 'zoo', 'spa', 'restaurant',
+                 'museum', 'lodging']
+    return render(request, 'map_modified.html',{'poiList': poi_types} )
+
 
 def start(request):
     return render(request, 'startPage.html',)
 
 @csrf_exempt
 def result(request):
+    poi_types = ['amusement_park', 'art_gallery', 'cafe', 'casino', 'hindu_temple', 'zoo', 'spa', 'restaurant',
+                 'museum', 'lodging']
     start = request.POST.get('start')
     destination = request.POST.get('destination')
     poi_coeff = request.POST.get('poi_coeff')
@@ -44,7 +51,7 @@ def result(request):
     poi_list = request.POST.get('poiData')
     poi_list = poi_list.split(',')
     print poi_list, "--->>poi's selected"
-    gmaps = googlemaps.Client(key='AIzaSyAtc-2ZwV_PGZaT-TxNR1YUnicbdeCNEg0')
+    gmaps = googlemaps.Client(key='AIzaSyDmT6F29WJ9M-viNlrMzRpRPtdseHTCfoA')
     now = datetime.now()
     response = gmaps.directions(start,destination,mode="transit",departure_time=now,alternatives = True)
 
@@ -63,19 +70,41 @@ def result(request):
         # for e in end:
         #     path.append([e['lat'], e['lng']])
         for l in directions_result['legs']:
-            print "l is ", l
+            # print "l is ", l
             for loc in l['steps']:
-                print "loc is ", loc
+                # print "loc is ", loc
                 if 'steps' in loc:
                     for s in loc['steps']:
-                        print "s is", s
+                        # print "s is", s
                         path.append([s['start_location']['lat'], s['start_location']['lng']])
                         path.append([s['end_location']['lat'], s['end_location']['lng']])
                 else:
                     path.append([loc['start_location']['lat'], loc['start_location']['lng']])
                     path.append([loc['end_location']['lat'], loc['end_location']['lng']])
+        pois = Set([])
         for p in path:
             l = findNearestLocality(p[0], p[1])
+            print l.name
+            print "Reached 1"
+            for poi_index in poi_list:
+                print "Reached 2"
+                results = gmaps.places_nearby(location=[l.lat, l.lng], radius=2000, type=poi_types[int(poi_index)])['results']
+                print "Len: ", len(results)
+                if len(results) != 0:
+                    print "Reached 3"
+                    max_rating = 0
+                    max_poi = ''
+                    for pid in results:
+                        print "Reached 4"
+                        if 'rating' in pid:
+                            print "Reached 5"
+                            if int(pid['rating']) > max_rating:
+                                print "Reached 6"
+                                max_rating = pid['rating']
+                                max_poi = pid['name']
+                            pois.add(max_poi)
+                            print "Updated POIS", pois
+                            break
             poi_weight = 0.0
             total_poi_list = []
             poi_obj = l.poi
@@ -97,8 +126,10 @@ def result(request):
         if weight > max_weight:
             max_weight = weight
             max_index = index
+            max_pois = pois
             #max_path = path
-    return render(request, 'plotTest.html', {'index': max_index, 'start': start, 'destination' : destination})
+    print "Max_POI", max_pois
+    return render(request, 'plotTest.html', {'index': max_index, 'start': start, 'destination' : destination, 'wayPoints': max_pois})
 
 
 def plotTest(request):
