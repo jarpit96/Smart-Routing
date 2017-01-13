@@ -6,11 +6,28 @@ from .models import District, Locality, State
 from django.views.decorators.csrf import csrf_exempt
 import pprint
 from sets import Set
+import requests
 # Create your views here.
 
 def test(request):
     a = [1, 2, 3]
     return render(request, 'result.html', {'a': a})
+
+
+def getWeather(lat, lon):
+    r = requests.get(
+        'http://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon + '&APPID=' + key)
+    pprint(r.json())
+
+def get_weather_weight(temperature,weather_condition):
+    if temperature > 25:
+        temperature = 50 - temperature
+    temperature /= 5
+    weather_description = {"clear sky":5,"few clouds" :3 ,"scattered clouds":4, "broken clouds":0,
+                           "shower rain":3, "rain":2, "thunderstorm":0, "snow":0, "mist":2}
+    temperature = (weather_description[weather_condition]+temperature)/2
+
+    return temperature
 
 #find closest locality using haversine
 def findNearestLocality(lat, lng):
@@ -49,6 +66,7 @@ def result(request):
     poi_coeff = request.POST.get('poi_coeff')
     crime_coeff = request.POST.get('crime_coeff')
     traffic_coeff = request.POST.get('traffic_coeff')
+    weather_coeff = request.POST.get('weather_coeff')
     poi_list = request.POST.get('poiPriority')
     poi_list = poi_list.split(',')
     print poi_list, "--->>poi's selected"
@@ -125,7 +143,12 @@ def result(request):
             for p_index in poi_list:
                 poi_weight += total_poi_list[int(p_index)]
             poi_weight /= len(poi_list)
-            weight += (float(crime_coeff)*float(l.crime_wt) + float(poi_coeff)*float(poi_weight) + float(traffic_coeff)*float(l.traffic_wt))
+
+            weather = getWeather(l.lat, l.lng)
+            temp = weather['main']['temp']
+            description = weather['weather']['description']
+            weather_weight = get_weather_weight(temp, description)
+            weight += (float(crime_coeff)*float(l.crime_wt) + float(poi_coeff)*float(poi_weight) + float(traffic_coeff)*float(l.traffic_wt)) + float(weather_coeff)*float(weather_weight)
 
         if weight > max_weight:
             max_weight = weight
