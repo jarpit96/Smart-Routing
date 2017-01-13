@@ -14,10 +14,11 @@ def test(request):
     return render(request, 'result.html', {'a': a})
 
 
-def getWeather(lat, lon):
+def get_weather(lat, lon):
+    key = '26b7b7d50fc03f7adfffab8179df757b'
     r = requests.get(
-        'http://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon + '&APPID=' + key)
-    pprint(r.json())
+        'http://api.openweathermap.org/data/2.5/weather?lat=' + str(lat) + '&lon=' + str(lon) + '&APPID=' + key)
+    return r.json()
 
 def get_weather_weight(temperature,weather_condition):
     if temperature > 25:
@@ -25,7 +26,8 @@ def get_weather_weight(temperature,weather_condition):
     temperature /= 5
     weather_description = {"clear sky":5,"few clouds" :3 ,"scattered clouds":4, "broken clouds":0,
                            "shower rain":3, "rain":2, "thunderstorm":0, "snow":0, "mist":2}
-    temperature = (weather_description[weather_condition]+temperature)/2
+    if weather_condition in weather_description:
+        temperature = (weather_description[weather_condition]+temperature)/2
 
     return temperature
 
@@ -50,7 +52,7 @@ def home(request):
 
     poi_types = {'Amusement Park': 0, 'Art Gallery': 1, 'Cafe': 2, 'Casino': 3, 'Hindu Temple':4, 'Zoo':5, 'Spa':6, 'Restaurant':7,
                  'Museum':8, 'Lodging':9}
-    return render(request, 'map_modified.html',{'poiList': poi_types} )
+    return render(request, 'home.html', {'poiList': poi_types})
 
 
 def start(request):
@@ -144,9 +146,9 @@ def result(request):
                 poi_weight += total_poi_list[int(p_index)]
             poi_weight /= len(poi_list)
 
-            weather = getWeather(l.lat, l.lng)
-            temp = weather['main']['temp']
-            description = weather['weather']['description']
+            weather = get_weather(l.lat, l.lng)
+            temp = weather['main']['temp']-273.15
+            description = str(weather['weather'][0]['description'])
             weather_weight = get_weather_weight(temp, description)
             weight += (float(crime_coeff)*float(l.crime_wt) + float(poi_coeff)*float(poi_weight) + float(traffic_coeff)*float(l.traffic_wt)) + float(weather_coeff)*float(weather_weight)
 
@@ -156,7 +158,7 @@ def result(request):
             max_pois = pois
             #max_path = path
     print "Max_POI", max_pois
-    return render(request, 'plotTest.html', {'index': max_index, 'start': start, 'destination' : destination, 'wayPoints': list(max_pois)})
+    return render(request, 'result.html', {'index': max_index, 'start': start, 'destination' : destination, 'wayPoints': list(max_pois)})
 
 
 def plotTest(request):
@@ -202,4 +204,4 @@ def plotTest(request):
     # for e in end:
     #     path.append([e['lat'], e['lng']])
     # print encoded_polyline
-    return render(request, 'plotTest.html', {'index': 1})
+    return render(request, 'result.html', {'index': 1})

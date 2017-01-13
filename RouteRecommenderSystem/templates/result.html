@@ -49,15 +49,17 @@
             //*********DIRECTIONS AND ROUTE**********************//
             source = document.getElementById("txtSource").value;
             destination = document.getElementById("txtDestination").value;
-            var waypts = [];
+            var waypts = [], totalWayPts = [];
             {% for w in wayPoints %}
-                waypts.push({
+                totalWayPts.push({
                               location:new google.maps.LatLng({{ w.lat }}, {{ w.lng }}),
                               stopover: true
                             });
             {% endfor %}
-
-            alert(waypts);
+            var jumps = Math.ceil(totalWayPts.length/8);
+            for(var i=0; i < totalWayPts.length; i += jumps)
+                waypts.push(totalWayPts[i]);
+            //alert(waypts);
             var request = {
                 origin: source,
                 destination: destination,
