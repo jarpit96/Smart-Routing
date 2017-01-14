@@ -111,7 +111,7 @@
 	<div class="heading_top">
 		<h3>Smart Routing</h3>
 	</div>
-	<form class="form-horizontal" style="margin-top: 10%" method="post" action="/routing/result/" onsubmit="return getPoiPriorityData()">
+	<form class="form-horizontal" style="margin-top: 5%" method="post" action="/routing/result/" onsubmit="return getPoiPriorityData()">
         <div class="form-group">
 			<label class="control-label col-sm-3" ></label>
 			<div class="col-sm-6">
@@ -120,22 +120,25 @@
 		</div>
         <div class="form-group">
 			<label class="control-label col-sm-3" for="Source">Enter Source</label>
-			<div class="col-sm-6">
+			<div class="col-sm-7">
 				<input id="src-input" type="text" name="start" class="places controls" placeholder="Enter a location" style="width:100%;margin:0px">
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="control-label col-sm-3" for="Destination">Enter Destination</label>
-			<div class="col-sm-6"> 
+			<div class="col-sm-7"> 
 				<input id="dest-input" type="text" name="destination" class="places controls" placeholder="Enter a location" style="width:100%;margin:0px">
 			</div>
 		</div>
 
 		<div class="form-group">
-			<label class="control-label col-sm-3" for="pwd">Assign priority : </label>
-            <label class="control-label col-sm-1" for="Source">Poi</label>
+			<!--
+			<label class="control-label col-md-2" for="pwd">Assign priority : </label>
+			-->
+            <label class="control-label col-sm-2 col-md-offset-1" for="Source">Priority : &nbsp&nbsp&nbsp&nbsp POI</label>
+			
 			<div class="col-sm-1">
-				<input type="text" class="form-control" id="priorityPOI" placeholder="Points of Intrests" name="poi_coeff" value="0.25">
+				<input type="text" class="form-control " id="priorityPOI" placeholder="Points of Intrests" name="poi_coeff" value="0.25" >
 			</div>
             <label class="control-label col-sm-1" for="Source">Crime</label>
 			<div class="col-sm-1">
@@ -150,8 +153,9 @@
 				<input type="text" class="form-control" id="priorityWeather" placeholder="Weather" name="weather_coeff" value="0.25">
 			</div>
 		</div>
-		
-		{% comment %}<div class="form-group">
+		<!--
+		{% comment %}
+		<div class="form-group">
 			<div class="col-sm-offset-3 col-sm-2">
 				<div class="dropdown">
 					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="background-color: #ffffff;border-color: #6E2D88; color:#000000;">Points of Intrests
@@ -173,16 +177,22 @@
 			</div>
 			
 			
-		</div>{% endcomment %}
-        <div class="form-group">
-            <label class="control-label">POI's Priority:</label> <!-- TODO -->
-                <div class="controls">
+		</div>
+		<br>
+		<hr>
+		<hr>
+		{% endcomment %}
+		-->
+		<div class="form-group ">
+                <div class="controls_nothing">
+				
                         <div class="container">
-                            <br />
-                            <div class="row">
+                            <br>
+							
+							<div class="row ">
 
-                                <div class="dual-list list-left col-md-5">
-                                    <div class="well text-right">
+                                <div class="dual-list list-left col-md-4 col-md-offset-2" >
+                                    <div class="well text-right" style="width:89%;float:right ">
                                         <div class="row">
                                         </div>
                                         <label class="control-label">Set POI's priority: </label>
@@ -204,8 +214,8 @@
                                     </button>
                                 </div>
 
-                                <div class="dual-list list-right col-md-5">
-                                    <div class="well">
+                                <div class="dual-list list-right col-md-4">
+                                    <div class="well" style="width:94%">
                                         <div class="row">
 
                                         </div>
@@ -218,9 +228,13 @@
                                 </div>
 
                             </div>
-                        </div>
+                        
+                            
+						</div>
                 </div>
         </div>
+		
+        
 		<div class="form-group">
 			<div class="col-sm-offset-3 col-sm-2" >
                 <input type="hidden" name="poiData" id="poiData">
