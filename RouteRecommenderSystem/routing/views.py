@@ -74,7 +74,7 @@ def result(request):
     print poi_list, "--->>poi's selected"
     gmaps = googlemaps.Client(key='AIzaSyDmT6F29WJ9M-viNlrMzRpRPtdseHTCfoA')
     now = datetime.now()
-    response = gmaps.directions(start,destination,mode="driving",departure_time=now,alternatives = True)
+    response = gmaps.directions(start,destination,mode="transit",departure_time=now,alternatives = True)
 
     max_weight = -float('inf')
     max_polyline = ''
@@ -158,7 +158,9 @@ def result(request):
             max_pois = pois
             #max_path = path
     print "Max_POI", max_pois
-    return render(request, 'result.html', {'index': max_index, 'start': start, 'destination' : destination, 'wayPoints': list(max_pois)})
+    return render(request, 'result.html', {'index': max_index, 'start': start, 'destination' : destination, 'wayPoints': list(max_pois),
+                                                'poiMarkersName':['abc','def'], 'poiMarkersCoordinates': [{'lat': 28.6519, 'lng': 77.2314},
+                                                                                                          {'lat': 28.6529, 'lng': 77.4315}]})
 
 
 def plotTest(request):
