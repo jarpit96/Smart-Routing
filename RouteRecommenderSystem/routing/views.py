@@ -103,6 +103,7 @@ def result(request):
                     path.append([loc['start_location']['lat'], loc['start_location']['lng']])
                     path.append([loc['end_location']['lat'], loc['end_location']['lng']])
         pois = []
+        pois_name = []
         locs = Set([])
         for p in path:
             l = findNearestLocality(p[0], p[1])
@@ -118,6 +119,7 @@ def result(request):
                     print "Reached 3"
                     max_rating = 0
                     max_poi = {}
+                    max_pois_name = ''
                     for pid in results:
                         print "Reached 4"
                         if 'rating' in pid:
@@ -126,7 +128,9 @@ def result(request):
                                 print "Reached 6"
                                 max_rating = pid['rating']
                                 max_poi = pid['geometry']['location']
+                                max_pois_name = pid['name']
                             pois.append(max_poi)
+                            pois_name.append(max_pois_name)
                             print "Updated POIS", pois
                             break
             poi_weight = 0.0
@@ -158,9 +162,10 @@ def result(request):
             max_pois = pois
             #max_path = path
     print "Max_POI", max_pois
+    # ['abc','def']
+    # [{'lat': 28.6519, 'lng': 77.2314},{'lat': 28.6529, 'lng': 77.4315}]
     return render(request, 'result.html', {'index': max_index, 'start': start, 'destination' : destination, 'wayPoints': list(max_pois),
-                                                'poiMarkersName':['abc','def'], 'poiMarkersCoordinates': [{'lat': 28.6519, 'lng': 77.2314},
-                                                                                                          {'lat': 28.6529, 'lng': 77.4315}]})
+                                                'poiMarkersName':pois_name, 'poiMarkersCoordinates': pois})
 
 
 def plotTest(request):
